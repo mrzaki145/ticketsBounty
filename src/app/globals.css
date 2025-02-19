@@ -1,0 +1,138 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme inline {
+  /* Minimalist & Calming Color Palette */
+  --color-background: light-dark(
+    hsl(0, 0%, 98%),
+    hsl(240, 10%, 12%)
+  ); /* Very light/dark gray */
+  --color-foreground: light-dark(
+    hsl(240, 10%, 12%),
+    hsl(0, 0%, 98%)
+  ); /* Dark/Light gray */
+  --color-card: light-dark(
+    hsl(0, 0%, 100%),
+    hsl(240, 10%, 16%)
+  ); /* White/Darker gray */
+  --color-card-foreground: light-dark(hsl(240, 10%, 12%), hsl(0, 0%, 98%));
+  --color-popover: light-dark(hsl(0, 0%, 100%), hsl(240, 10%, 16%));
+  --color-popover-foreground: light-dark(hsl(240, 10%, 12%), hsl(0, 0%, 98%));
+  --color-primary: light-dark(
+    hsl(200, 70%, 45%),
+    hsl(200, 50%, 55%)
+  ); /* Teal/Cyan - subtle and calming */
+  --color-primary-foreground: light-dark(
+    hsl(0, 0%, 100%),
+    hsl(0, 0%, 0%)
+  ); /* White/Black */
+  --color-secondary: light-dark(
+    hsl(0, 0%, 92%),
+    hsl(240, 5%, 24%)
+  ); /* Very light/dark gray */
+  --color-secondary-foreground: light-dark(hsl(240, 10%, 12%), hsl(0, 0%, 98%));
+  --color-muted: light-dark(hsl(0, 0%, 92%), hsl(240, 5%, 24%));
+  --color-muted-foreground: light-dark(
+    hsl(240, 8%, 50%),
+    hsl(0, 0%, 60%)
+  ); /* Medium grays */
+  --color-accent: light-dark(
+    hsl(30, 50%, 50%),
+    hsl(30, 40%, 60%)
+  ); /* Soft orange/brown */
+  --color-accent-foreground: light-dark(hsl(0, 0%, 100%), hsl(0, 0%, 0%));
+  --color-destructive: light-dark(hsl(0, 60%, 50%), hsl(0, 50%, 40%)); /* Red */
+  --color-destructive-foreground: light-dark(
+    hsl(0, 0%, 100%),
+    hsl(0, 0%, 100%)
+  );
+  --color-border: light-dark(
+    hsl(0, 0%, 86%),
+    hsl(240, 5%, 20%)
+  ); /* Light/Dark gray */
+  --color-input: light-dark(
+    hsl(0, 0%, 94%),
+    hsl(240, 5%, 22%)
+  ); /* Very light/dark gray */
+  --color-ring: light-dark(
+    hsl(200, 70%, 45%),
+    hsl(200, 50%, 55%)
+  ); /* Matches primary */
+  --color-chart-1: light-dark(
+    hsl(220, 60%, 40%),
+    hsl(220, 50%, 30%)
+  ); /* Blue */
+  --color-chart-2: light-dark(
+    hsl(150, 50%, 40%),
+    hsl(150, 40%, 30%)
+  ); /* Green */
+  --color-chart-3: light-dark(
+    hsl(40, 60%, 50%),
+    hsl(40, 50%, 40%)
+  ); /* Yellow */
+  --color-chart-4: light-dark(
+    hsl(300, 50%, 40%),
+    hsl(300, 40%, 30%)
+  ); /* Magenta */
+  --color-chart-5: light-dark(hsl(10, 60%, 50%), hsl(10, 50%, 40%)); /* Red */
+
+  --radius: 0.5rem;
+
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --color-sidebar-border: var(--sidebar-border);
+
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+
+  --color-sidebar-accent: var(--sidebar-accent);
+
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+
+  --color-sidebar-primary: var(--sidebar-primary);
+
+  --color-sidebar-foreground: var(--sidebar-foreground);
+
+  --color-sidebar: var(--sidebar);
+}
+
+:root {
+  --sidebar: hsl(0 0% 98%);
+  --sidebar-foreground: hsl(240 5.3% 26.1%);
+  --sidebar-primary: hsl(240 5.9% 10%);
+  --sidebar-primary-foreground: hsl(0 0% 98%);
+  --sidebar-accent: hsl(240 4.8% 95.9%);
+  --sidebar-accent-foreground: hsl(240 5.9% 10%);
+  --sidebar-border: hsl(220 13% 91%);
+  --sidebar-ring: hsl(217.2 91.2% 59.8%);
+}
+
+.dark {
+  --sidebar: hsl(240 5.9% 10%);
+  --sidebar-foreground: hsl(240 4.8% 95.9%);
+  --sidebar-primary: hsl(224.3 76.3% 48%);
+  --sidebar-primary-foreground: hsl(0 0% 100%);
+  --sidebar-accent: hsl(240 3.7% 15.9%);
+  --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
+  --sidebar-border: hsl(240 3.7% 15.9%);
+  --sidebar-ring: hsl(217.2 91.2% 59.8%);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    color-scheme: light dark;
+    /* scrollbar-gutter: stable; */
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@utility container {
+  @apply mx-auto px-4;
+}

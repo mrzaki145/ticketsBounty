@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE `ticket` ADD COLUMN `userId` VARCHAR(191) NOT NULL DEFAULT 'Hc44TYCMvSTAECKEOCPrclksDz0dltuh';
+
+-- AddForeignKey
+ALTER TABLE `Ticket` ADD CONSTRAINT `Ticket_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `user`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

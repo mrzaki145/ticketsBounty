@@ -1,0 +1,140 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Session {
+  id                   String   @id
+  expiresAt            DateTime
+  token                String   @unique
+  createdAt            DateTime
+  updatedAt            DateTime
+  ipAddress            String?  @db.Text
+  userAgent            String?  @db.Text
+  userId               String
+  activeOrganizationId String?  @db.Text
+  user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId], map: "session_userId_fkey")
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String    @db.Text
+  providerId            String    @db.Text
+  userId                String
+  accessToken           String?   @db.Text
+  refreshToken          String?   @db.Text
+  idToken               String?   @db.Text
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?   @db.Text
+  password              String?   @db.Text
+  createdAt             DateTime
+  updatedAt             DateTime
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId], map: "account_userId_fkey")
+  @@map("account")
+}
+
+model Verification {
+  id         String    @id
+  identifier String    @db.Text
+  value      String    @db.Text
+  expiresAt  DateTime
+  createdAt  DateTime?
+  updatedAt  DateTime?
+
+  @@map("verification")
+}
+
+model User {
+  id            String        @id
+  name          String        @db.Text
+  email         String        @unique
+  emailVerified Boolean
+  image         String?       @db.Text
+  createdAt     DateTime
+  updatedAt     DateTime
+  comments      Comment[]
+  commentVotes  CommentVote[]
+  tickets       Ticket[]
+  ticketVotes   TicketVote[]
+  accounts      Account[]
+  sessions      Session[]
+
+  @@map("user")
+}
+
+model Ticket {
+  id        Int          @id @default(autoincrement())
+  title     String       @db.VarChar(255)
+  content   String       @db.VarChar(1024)
+  status    TicketStatus @default(OPEN)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  deadline  String?
+  bounty    Int?
+  userId    String
+  comments  Comment[]
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  votes     TicketVote[]
+
+  @@index([userId], map: "Ticket_userId_fkey")
+}
+
+model TicketVote {
+  id       Int      @id @default(autoincrement())
+  ticketId Int
+  userId   String
+  voteType VoteType
+  ticket   Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([ticketId, userId])
+  @@index([userId], map: "TicketVote_userId_fkey")
+}
+
+model Comment {
+  id        Int           @id @default(autoincrement())
+  content   String        @db.Text
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  ticketId  Int
+  userId    String
+  ticket    Ticket        @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  votes     CommentVote[]
+
+  @@index([ticketId], map: "Comment_ticketId_fkey")
+  @@index([userId], map: "Comment_userId_fkey")
+}
+
+model CommentVote {
+  id        Int      @id @default(autoincrement())
+  commentId Int
+  userId    String
+  voteType  VoteType
+  comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([commentId, userId])
+  @@index([userId], map: "CommentVote_userId_fkey")
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  CLOSED
+}
+
+enum VoteType {
+  UPVOTE
+  DOWNVOTE
+}
