@@ -18,9 +18,6 @@ model Session {
   userId               String
   activeOrganizationId String?  @db.Text
   user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId], map: "session_userId_fkey")
-  @@map("session")
 }
 
 model Account {
@@ -38,9 +35,6 @@ model Account {
   createdAt             DateTime
   updatedAt             DateTime
   user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId], map: "account_userId_fkey")
-  @@map("account")
 }
 
 model Verification {
@@ -79,14 +73,12 @@ model Ticket {
   status    TicketStatus @default(OPEN)
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
-  deadline  String?
+  deadline  DateTime? // Changed to DateTime for better date handling
   bounty    Int?
   userId    String
   comments  Comment[]
   user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   votes     TicketVote[]
-
-  @@index([userId], map: "Ticket_userId_fkey")
 }
 
 model TicketVote {
@@ -98,7 +90,7 @@ model TicketVote {
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([ticketId, userId])
-  @@index([userId], map: "TicketVote_userId_fkey")
+  @@index([userId])
 }
 
 model Comment {
@@ -111,9 +103,6 @@ model Comment {
   ticket    Ticket        @relation(fields: [ticketId], references: [id], onDelete: Cascade)
   user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   votes     CommentVote[]
-
-  @@index([ticketId], map: "Comment_ticketId_fkey")
-  @@index([userId], map: "Comment_userId_fkey")
 }
 
 model CommentVote {
@@ -123,9 +112,6 @@ model CommentVote {
   voteType  VoteType
   comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([commentId, userId])
-  @@index([userId], map: "CommentVote_userId_fkey")
 }
 
 enum TicketStatus {
