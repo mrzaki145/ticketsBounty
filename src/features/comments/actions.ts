@@ -56,12 +56,10 @@ export async function voteOnComment(
   if (!user) redirect(signInPath());
 
   try {
-    const existingVote = await prisma.commentVote.findUnique({
+    const existingVote = await prisma.commentVote.findFirst({
       where: {
-        commentId_userId: {
-          commentId: comment.id,
-          userId: user.id,
-        },
+        userId: user.id,
+        commentId: comment.id,
       },
     });
 
@@ -69,19 +67,13 @@ export async function voteOnComment(
       if (existingVote.voteType === voteType) {
         await prisma.commentVote.delete({
           where: {
-            commentId_userId: {
-              commentId: comment.id,
-              userId: user.id,
-            },
+            id: existingVote.id,
           },
         });
       } else {
         await prisma.commentVote.update({
           where: {
-            commentId_userId: {
-              commentId: comment.id,
-              userId: user.id,
-            },
+            id: existingVote.id,
           },
           data: {
             voteType: voteType,
