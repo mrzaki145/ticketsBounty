@@ -19,39 +19,33 @@ export async function createTicket(
   actionState: ActionState,
   formData: FormData
 ) {
-  let ticket;
-
   const session = await auth.api.getSession({
     headers: await headers(),
   });
 
   const userId = session?.user.id;
 
-  if (!userId) {
-    redirect(signInPath());
-    // return toActionState("ERROR", "You must be logged in to create a ticket");
-  }
+  if (!userId) redirect(signInPath());
 
+  let ticket;
   try {
-    // console.log("formData", Object.fromEntries(formData));
     const data = createTicketSchema.parse(Object.fromEntries(formData));
-    // console.log("data", data);
 
     ticket = await prisma.ticket.create({
       data: {
         title: data.title,
         content: data.content,
-        bounty: data.bounty,
-        deadline: data.deadline,
+        bounty: Number(data.bounty), // Convert bounty to number since FormData values are strings
+        deadline: new Date(data.deadline), // Convert deadline string to Date object
         userId,
       },
     });
+    console.log("ticket", ticket);
   } catch (error) {
     return fromErrorToActionState(error, formData);
   }
 
   revalidatePath(ticketsPath());
-  // revalidateTag("tickets");
   if (ticket) redirect(ticketPathId(ticket.id));
 
   return toActionState("SUCCESS", "Ticket created");
